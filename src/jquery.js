@@ -65,24 +65,26 @@ jQuery.fn = jQuery.prototype = {
   // 改
   // 闭包：函数访问外部变量
   addClass(className) {
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].classList.add(className);
+    for (let i = 0; i < this.elements.length; i++) {
+      this.elements[i].classList.add(className);
     }
     return this;
   },
 
   // 查
   get(index) {
-    return elements[index];
+    return this.elements[index]; // this就是api
   },
   find(selector) {
     let array = [];
-    for (let i = 0; i < elements.length; i++) {
-      array = array.concat(Array.from(elements[i].querySelectorAll(selector)));
+    for (let i = 0; i < this.elements.length; i++) {
+      array = array.concat(
+        Array.from(this.elements[i].querySelectorAll(selector))
+      );
     }
     /**
      * 用之前的空数组array连接上新的元素，然后把连接了新元素的新数组array放回空数组array
-     * 另外，elements[i].querySelectorAll(selector)是一个伪数组
+     * 另外，this.elements[i].querySelectorAll(selector)是一个伪数组
      */
     array.oldApi = this; // this是旧的api（当前的对象）
     return jQuery(array);
@@ -95,19 +97,19 @@ jQuery.fn = jQuery.prototype = {
 
     /**
      * 目的是防止
-     * elements = array;
+     * this.elements = array;
      * return this;
-     * "污染"elements
+     * "污染"this.elements
      */
   },
   each(fn) {
-    for (let i = 0; i < elements.length; i++) {
-      fn.call(null, elements[i], i); // this为null，或者说fn不支持this
+    for (let i = 0; i < this.elements.length; i++) {
+      fn.call(null, this.elements[i], i); // this为null，或者说fn不支持this
     }
     return this; // this是api对象
   },
   print() {
-    console.log(elements); // elements是对应的元素们，与this所指的对象要区分开
+    console.log(this.elements); // elements是对应的元素们，与this所指的对象要区分开
   },
   end() {
     return this.oldApi; // this是新的api（当前的api）
